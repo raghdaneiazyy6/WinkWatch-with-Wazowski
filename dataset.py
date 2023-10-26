@@ -150,9 +150,9 @@ class AlphaWaves():
         chnames = [
             'Fp1',
             'Fp2',
-            'Fc5',
+            'FC5',
             'Fz',
-            'Fc6',
+            'FC6',
             'T7',
             'Cz',
             'T8',
@@ -167,10 +167,11 @@ class AlphaWaves():
             'stim']
         chtypes = ['eeg'] * 16 + ['stim']
         X = np.concatenate([S, stim[:, None]], axis=1).T
-
+        montage = mne.channels.make_standard_montage('standard_1020')
         info = mne.create_info(ch_names=chnames, sfreq=512,  # sampling frequency is known from the data info provided above
                                ch_types=chtypes,
                                verbose=False)  # metadata object about the EEG signals
+        info.set_montage(montage, on_missing='ignore')
         raw = mne.io.RawArray(data=X, info=info, verbose=False)
 
         return raw
