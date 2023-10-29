@@ -14,7 +14,6 @@ import pyqtgraph as pg
 
 
 
-
 FORM_CLASS, _ = loadUiType(path.join(path.dirname(__file__), "design.ui"))
 
 class MainApp(QMainWindow, FORM_CLASS):
@@ -22,13 +21,13 @@ class MainApp(QMainWindow, FORM_CLASS):
         super(MainApp, self).__init__(parent)
         QMainWindow.__init__(self)
         self.setupUi(self)
-        windowIcon = QIcon("imgs/windowIcon.png")
+        windowIcon = QIcon("Qt Application\imgs\windowIcon.png")
         self.setWindowIcon(windowIcon)
         self.setWindowTitle("WinkWatch With Wazowski")
 
         
-        self.openEyeImage="imgs/mikeOpen.png"
-        self.closeEyeImage="imgs/mikeClose.png"
+        self.openEyeImage="Qt Application\imgs\mikeOpen.png"
+        self.closeEyeImage="Qt Application\imgs\mikeClose.png"
       
         self.unfilteredSignalWidget = pg.PlotWidget() 
         self.filteredSignalWidget = pg.PlotWidget()
@@ -37,17 +36,69 @@ class MainApp(QMainWindow, FORM_CLASS):
 
         self.unfilteredSignalWidget.getViewBox().setMouseEnabled(x=False, y=False)
         self.filteredSignalWidget.getViewBox().setMouseEnabled(x=False, y=False)
-        
-        self.x_axis_labels = [(0, '0'), (np.pi / 2, 'π/2'), (np.pi, 'π'), (3 * np.pi / 2, '3π/2'), (2 * np.pi, '2π')]
-        self.unfilteredSignalWidget.setXRange(0, 2 * np.pi)
-        self.filteredSignalWidget.setXRange(0, 2 * np.pi)
-        
-        self.unfilteredSignalWidget.getAxis("bottom").setTicks([self.x_axis_labels])
-        self.filteredSignalWidget.getAxis("bottom").setTicks([self.x_axis_labels])
-        
-        
+ 
+
         self.openEyeButton.clicked.connect(self.showOpenEye)
         self.closeEyeButton.clicked.connect(self.showCloseEye)
+        self.addUnfilteredEEG.clicked.connect(self.openUnfilteredFile)
+        self.addFilteredEEG.clicked.connect(self.openFilteredFile)
+
+    
+    def openUnfilteredFile(self):
+        options = QFileDialog.Option.ReadOnly
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open Files", "", "CSV Files (*.csv);;All Files (*)", options=options)
+        if file_name:
+            file_data = pd.read_csv(file_name)  
+        
+        if file_data is not None:
+            self.plotUnfiltered(file_data)
+            
+    def openFilteredFile(self):
+        options = QFileDialog.Option.ReadOnly
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open Files", "", "CSV Files (*.csv);;All Files (*)", options=options)
+        if file_name:
+            file_data = pd.read_csv(file_name)
+        
+        if file_data is not None:
+            self.plotFiltered(file_data)
+            
+
+    def plotUnfiltered(self, data):
+        self.unfilteredSignalWidget.clear()  
+        num_channels = min(data.shape[1], 16) 
+
+        vertical_offset = 0
+        spacing = 5
+        
+        for i in range(num_channels):
+            channel_data = data.iloc[:, i].values + vertical_offset
+            self.unfilteredSignalWidget.plot(channel_data, pen='#E9950C')  
+            vertical_offset += np.max(channel_data) - np.min(channel_data) + spacing 
+
+            # Add label for channel name
+            channel_name = data.columns[i]  # Get the name from the DataFrame column
+            label = pg.TextItem(text=channel_name,anchor=(0, 0))
+            label.setPos(0, vertical_offset)
+            self.unfilteredSignalWidget.addItem(label)
+
+    def plotFiltered(self, data):
+        self.filteredSignalWidget.clear()  
+        num_channels = min(data.shape[1], 16)  
+
+        vertical_offset = 0
+        spacing = 5  
+        
+        for i in range(num_channels):
+            channel_data = data.iloc[:, i].values + vertical_offset
+            self.filteredSignalWidget.plot(channel_data, pen='#E9950C')  
+            vertical_offset += np.max(channel_data) - np.min(channel_data) + spacing  
+
+            # Add label for channel name
+            channel_name = data.columns[i]  # Get the name from the DataFrame column
+            label = pg.TextItem(text=channel_name,anchor=(0, 0))
+            label.setPos(0, vertical_offset)
+            self.filteredSignalWidget.addItem(label)
+
         
     def showOpenEye(self):
         pixmap = QtGui.QPixmap(self.openEyeImage)
