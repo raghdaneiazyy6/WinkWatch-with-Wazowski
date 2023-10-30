@@ -70,7 +70,7 @@ class MainApp(QMainWindow, FORM_CLASS):
         vertical_offset = 0
         spacing = 5
         
-        for i in range(num_channels):
+        for i in range(3):
             channel_data = data.iloc[:, i].values + vertical_offset
             self.unfilteredSignalWidget.plot(channel_data, pen='#E9950C')  
             vertical_offset += np.max(channel_data) - np.min(channel_data) + spacing 
@@ -88,7 +88,7 @@ class MainApp(QMainWindow, FORM_CLASS):
         vertical_offset = 0
         spacing = 5  
         
-        for i in range(num_channels):
+        for i in range(3):
             channel_data = data.iloc[:, i].values + vertical_offset
             self.filteredSignalWidget.plot(channel_data, pen='#E9950C')  
             vertical_offset += np.max(channel_data) - np.min(channel_data) + spacing  
