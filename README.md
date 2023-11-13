@@ -7,6 +7,29 @@ WinkWatch with Wazowski is a delightful UI and **Qt application** that leverages
 
 Inspired by Mike Wazowski from Monsters Inc., this project combines cutting-edge technology with a touch of whimsy. With a user-friendly interface, it provides real-time feedback on eye states, opening up exciting possibilities for interactive applications. Join us in exploring the fascinating world of brain-computer interfaces with a touch of Pixar magic!
 
+## About
+
+In the dynamic landscape of medical challenges, our project introduces a novel approach: **EEG-based Eye State Detection**. Imagine a system that can instantaneously classify whether a patient's eyes are open or closed by analyzing their brain's electrical activity. That's precisely what WinkWatch with Wazowski does!
+
+## Why EEG?
+
+Electroencephalography (EEG) has long been a hero in neuroscience. Traditionally used for epilepsy studies, we're flipping the script by integrating EEG technology to monitor ocular activity. This paradigm shift opens doors to real-time insights, particularly valuable for ensuring optimal sedation levels during critical medical interventions.
+
+## How It Works
+
+1. **Data Collection:** Using a top-notch EEG setup, we recorded brain activity from willing participants, capturing both eyes-open and eyes-closed conditions.
+
+2. **Data Description:**
+    - **Format:** EEG data is stored in .mat files.
+    - **Structure:** Each file is a 2D matrix, with rows representing observations at each time sample. Columns 2 to 17 contain recordings from 16 EEG electrodes, while the first column represents timestamps. Columns 18 and 19 hold triggers indicating experimental conditions.
+
+3. **Data Magic:** Our team worked its magic on the EEG data. We filtered it to isolate the intriguing alpha wave activity (8-12 Hz), denoised it with Independent Component Analysis (ICA), and then resampled for consistency.
+
+4. **Feature Extravaganza:** We dived into Power Spectral Density, extracting features like frequency bands' power intensities and statistical measures. Think of it as capturing the unique fingerprints of brain activity.
+
+5. **Model Mastery:** Armed with these features, we trained three powerful models – Support Vector Machine (SVM), Random Forest, and XGBoost. Each aimed to be the brainiac in distinguishing between eyes open and closed states.
+
+
 ## Contributors
 
 Gratitude goes out to all team members for their valuable contributions to this project.
